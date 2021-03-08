@@ -1,13 +1,18 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { CreatePostDto } from './dtos';
 import { EditPostDto } from './dtos/edit-post.dto';
+import { PostService } from './post.service';
 
 @Controller('post')
 export class PostController {
 
+    constructor(private readonly _postService: PostService){ // readonly 
+
+    }
+
     @Get()
     getMany(){
-        return 'hablame menor'
+        return this._postService.getMany();
     }
 
     @Get('GetOne')
@@ -19,29 +24,26 @@ export class PostController {
 
     @Get(':id')
     getOne(@Param('id', ParseIntPipe) id:number){
-        console.log('id: '+id);
-        return {
-            message: 'GetOne '+id
-        };
+        return this._postService.getOne(id);
     }
     
     //se cread DTO para recibir el JSon sino toca hacer un body por cada parametro
     @Post()
     createOne(@Body() dto: CreatePostDto){
-        return dto;
+        return this._postService.createOne(dto);
     }
 
     @Put(':id')
     editOne(
-        @Param('id') id:string,
+        @Param('id',ParseIntPipe) id:number,
         @Body() dto: EditPostDto
         ){
-return dto
+            return this._postService.editOne(id,dto);
     }
 
     @Delete(':id')
-    deleteOne(@Param('id') id:string){
-
+    deleteOne(@Param('id',ParseIntPipe) id:number){
+        return this._postService.deleteOne(id);
     }
 
 }
