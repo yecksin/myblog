@@ -1,4 +1,5 @@
-import { IsArray, IsBoolean, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsEnum, IsString } from "class-validator";
+import { EnumToString } from "src/helpers/enumToString";
 import { PostCategory } from "../enums";
 
 export class CreatePostDto {
@@ -18,7 +19,9 @@ export class CreatePostDto {
     @IsString()
     content: string;
 
-    @IsString()
+    @IsEnum(PostCategory, {
+        message: `Opcion inivalida. Las opciones correctas son ${EnumToString(PostCategory)}`
+    }) // un enum es para que solo se pueda seleccionar las opciones declaradas
     category: PostCategory;
 
     @IsArray()
