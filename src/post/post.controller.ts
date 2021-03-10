@@ -1,8 +1,10 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dtos';
 import { EditPostDto } from './dtos/edit-post.dto';
 import { PostService } from './post.service';
 
+@ApiTags('Posts')
 @Controller('post')
 export class PostController {
 
