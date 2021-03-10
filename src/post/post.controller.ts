@@ -11,8 +11,12 @@ export class PostController {
     }
 
     @Get()
-    getMany(){
-        return this._postService.getMany();
+    async getMany(){
+        let data = await this._postService.getMany();
+        return {
+            message: 'peticion correcta',
+            data
+        }
     }
 
     @Get('GetOne')
@@ -23,27 +27,27 @@ export class PostController {
     }
 
     @Get(':id')
-    getOne(@Param('id', ParseIntPipe) id:number){
-        return this._postService.getOne(id);
+    async getOne(@Param('id', ParseIntPipe) id:number){
+        return await this._postService.getOne(id);
     }
     
     //se cread DTO para recibir el JSon sino toca hacer un body por cada parametro
     @Post()
-    createOne(@Body() dto: CreatePostDto){
-        return this._postService.createOne(dto);
+    async createOne(@Body() dto: CreatePostDto){
+        return await this._postService.createOne(dto);
     }
 
     @Put(':id')
-    editOne(
+    async editOne(
         @Param('id',ParseIntPipe) id:number,
         @Body() dto: EditPostDto
         ){
-            return this._postService.editOne(id,dto);
+            return await this._postService.editOne(id,dto);
     }
 
     @Delete(':id')
-    deleteOne(@Param('id',ParseIntPipe) id:number){
-        return this._postService.deleteOne(id);
+    async deleteOne(@Param('id',ParseIntPipe) id:number){
+        return await this._postService.deleteOne(id);
     }
 
 }

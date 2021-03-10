@@ -1,29 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreatePostDto } from './dtos';
 import { EditPostDto } from './dtos/edit-post.dto';
+import { Post } from './entities/post.entity';
 
 @Injectable()
 export class PostService {
-    
-    getMany(){
-        return { ok: 'getMany'}
+   
+    constructor(
+        @InjectRepository(Post)
+        private readonly postRespository: Repository<Post>
+        ){
+
     }
 
-    getOne(id:number){
-        return { ok: 'getOne'}
+    async getMany(): Promise<Post[]>{
+        return await this.postRespository.find();
     }
 
-    editOne(id:number,dto: EditPostDto){
-        return { ok: 'editOne'}
+    async getOne(id:number){
+        const post = await this.postRespository.findOne(id);
+        if (!post) throw new NotFoundException('el post no existe');
+        return post;
+        
     }
 
-    deleteOne(id:number){
-        return { ok: 'deleteOne'}
+    async createOne(dto: CreatePostDto){
+        const post =  this.postRespository.create(dto as any);
+        return await this.postRespository.save(post)
     }
 
-    createOne(dto: CreatePostDto){
-        return { ok: 'createOne'}
+    async editOne(id:number,dto: EditPostDto){
+        const post = await this.postRespository.findOne(id);
+
+        if (!post) throw new NotFoundException('Post no existe');
+
+        const editedPost = Object.assign(post,dto)
+        return await this.postRespository.save(editedPost)
     }
+
+    async deleteOne(id:number){
+        const post = await this.postRespository.findOne(id);
+
+        if (!post) throw new NotFoundException('Post no existe');
+        return await this.postRespository.delete(id);
+    }
+
+
 
 
 }
